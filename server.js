@@ -100,7 +100,7 @@ const app = async () => {
       await viewAllRoles();
       break;
     case "Add Role":
-      //
+      await addRole();
       break;
     case "View All Departments":
       await viewAllDept();
@@ -147,6 +147,18 @@ const addDept = async () => {
   console.log(`Added ${ans.dept} to the database`);
   // db.end();
 };
+
+const addRole = async () => {
+  //query table department first to get all the new departments
+
+
+  let ans = await prompt([questions[2],questions[3],questions[4]]);
+  await db.promise()
+    .query(`INSERT INTO role (title, salary, department_id) VALUES ('${ans.role}',${ans.role_salary},${ans.role_dept})`);
+  
+}
+
+
 
 (async () => {
   while (1) {
