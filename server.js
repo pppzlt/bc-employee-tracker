@@ -127,7 +127,7 @@ const viewAllEmployees = async () => {
   let result = await db
     .promise()
     .query(
-      "SELECT T1.id, T1.first_name, T1.last_name, role.title, department.name, role.salary, CONCAT(T2.first_name,' ',T2.last_name) AS manager FROM employee T1 INNER JOIN role ON T1.role_id=role.id INNER JOIN department ON role.department_id = department.id LEFT JOIN employee T2 ON T1.manager_id = T2.id ORDER BY T1.id"
+      "SELECT T1.id, T1.first_name, T1.last_name, role.title, department.name, role.salary, CONCAT(T2.first_name,' ',T2.last_name) AS manager FROM employee T1 LEFT JOIN role ON T1.role_id=role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee T2 ON T1.manager_id = T2.id ORDER BY T1.id"
     );
   // await function (err, result) {
   console.table(result[0]);
