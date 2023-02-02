@@ -87,17 +87,44 @@ const db = mysql.createConnection(
 const app = async () => {
   let ans = await prompt([questions[0]]);
   switch (ans.root) {
-    case 'Vew All Employees':
-
+    case "View All Employees":
+      await viewAllEmployees();
       break;
-    case 'Add Employee':
-
+    case "Add Employee":
       break;
-    case 'Update Employee Role':
-
+    case "Update Employee Role":
       break;
-    case 'View All Roles':
-      
+    case "View All Roles":
+      await viewAllRoles();
+      break;
+    case "Add Role":
+      break;
+    case "View All Departments":
+      await viewAllDept();
+      break;
+    case "Add Departments":
       break;
   }
-}
+};
+
+const viewAllDept = async () => {
+  let result = await db.promise().query("SELECT * FROM department");
+  console.table(result[0]);
+  db.end();
+};
+
+const viewAllRoles = async () => {
+  let result = await db.promise().query("SELECT * FROM role");
+  console.table(result[0]);
+  db.end();
+};
+
+const viewAllEmployees = async () => {
+  let result = await db.promise().query("SELECT * FROM employee");
+  // await function (err, result) {
+  console.table(result[0]);
+  // });
+  db.end();
+};
+
+app();
