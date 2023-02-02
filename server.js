@@ -15,7 +15,7 @@ const questions = [
       "View All Roles",
       "Add Role",
       "View All Departments",
-      "Add Departments",
+      "Add Department",
     ],
   },
   {
@@ -91,18 +91,22 @@ const app = async () => {
       await viewAllEmployees();
       break;
     case "Add Employee":
+      //
       break;
     case "Update Employee Role":
+      //
       break;
     case "View All Roles":
       await viewAllRoles();
       break;
     case "Add Role":
+      //
       break;
     case "View All Departments":
       await viewAllDept();
       break;
-    case "Add Departments":
+    case "Add Department":
+      await addDept();
       break;
   }
 };
@@ -132,6 +136,15 @@ const viewAllEmployees = async () => {
   // await function (err, result) {
   console.table(result[0]);
   // });
+  db.end();
+};
+
+const addDept = async () => {
+  let ans = await prompt([questions[1]])
+  await db
+    .promise()
+    .query(`INSERT INTO department (name) VALUES ('${ans.dept}')`);
+  console.log(`Added ${ans.dept} to the database`);
   db.end();
 };
 
