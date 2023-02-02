@@ -114,7 +114,7 @@ const app = async () => {
 const viewAllDept = async () => {
   let result = await db.promise().query("SELECT * FROM department");
   console.table(result[0]);
-  db.end();
+  // db.end();
 };
 
 const viewAllRoles = async () => {
@@ -124,7 +124,7 @@ const viewAllRoles = async () => {
       "SELECT role.id, role.title, department.name AS department, role.salary FROM role LEFT JOIN department ON role.department_id = department.id"
     );
   console.table(result[0]);
-  db.end();
+  // db.end();
 };
 
 const viewAllEmployees = async () => {
@@ -136,16 +136,20 @@ const viewAllEmployees = async () => {
   // await function (err, result) {
   console.table(result[0]);
   // });
-  db.end();
+  // db.end();
 };
 
 const addDept = async () => {
-  let ans = await prompt([questions[1]])
+  let ans = await prompt([questions[1]]);
   await db
     .promise()
     .query(`INSERT INTO department (name) VALUES ('${ans.dept}')`);
   console.log(`Added ${ans.dept} to the database`);
-  db.end();
+  // db.end();
 };
 
-app();
+(async () => {
+  while (1) {
+    await app();
+  }
+})();
