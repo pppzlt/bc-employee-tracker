@@ -115,7 +115,7 @@ const app = async () => {
 const viewAllDept = async () => {
   let result = await db.promise().query("SELECT * FROM department");
   console.table(result[0]);
-  db.end(); //can be comment out
+  // db.end(); //can be comment out
 };
 
 const viewAllRoles = async () => {
@@ -125,7 +125,7 @@ const viewAllRoles = async () => {
       "SELECT role.id, role.title, department.name AS department, role.salary FROM role LEFT JOIN department ON role.department_id = department.id"
     );
   console.table(result[0]);
-  db.end(); //can be comment out
+  // db.end(); //can be comment out
 };
 
 const viewAllEmployees = async () => {
@@ -137,7 +137,7 @@ const viewAllEmployees = async () => {
   // await function (err, result) {
   console.table(result[0]);
   // });
-  db.end(); //can be comment out
+  // db.end(); //can be comment out
 };
 
 const addDept = async () => {
@@ -146,7 +146,7 @@ const addDept = async () => {
     .promise()
     .query(`INSERT INTO department (name) VALUES ('${ans.dept}')`);
   console.log(`Added ${ans.dept} to the database`);
-  db.end(); //can be comment out
+  // db.end(); //can be comment out
 };
 
 const addRole = async () => {
@@ -166,7 +166,7 @@ const addRole = async () => {
       `INSERT INTO role (title, salary, department_id) VALUES ('${ans.role}',${ans.role_salary},${dept_id})`
     );
   console.log(`Added ${ans.role} to the database`);
-  db.end(); //can be comment out
+  // db.end(); //can be comment out
 };
 
 const addEmployee = async () => {
@@ -210,7 +210,7 @@ const addEmployee = async () => {
       `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('${ans.firstname}','${ans.lastname}',${role_id},${manager_id})`
     );
   console.log(`Added ${ans.firstname + " " + ans.lastname} to the database`);
-  db.end(); //can be comment out
+  // db.end(); //can be comment out
 };
 
 const updateEmployeeRole = async () => {
@@ -233,18 +233,22 @@ const updateEmployeeRole = async () => {
 
   let ans = await prompt([questions[9], questions[10]]);
   //get the employee and the new role id;
-  let emp_id = results_emp.find((key) => ans.upd_empl === (key.first_name + " " + key.last_name)).id;
+  let emp_id = results_emp.find(
+    (key) => ans.upd_empl === key.first_name + " " + key.last_name
+  ).id;
   let role_id = results_role.find((key) => key.title === ans.upd_empl_role).id;
-  await db.promise().query(`UPDATE employee SET role_id = ${role_id} WHERE id = ${emp_id}`);
+  await db
+    .promise()
+    .query(`UPDATE employee SET role_id = ${role_id} WHERE id = ${emp_id}`);
   console.log(`Updated employee's role`);
-  db.end(); //can be comm out
+  // db.end(); //can be comm out
 };
 
-//---------come back after end
-// (async () => {
-//   while (1) {
-//     await app();
-//   }
-// })();
+// ---------come back after end
+(async () => {
+  while (1) {
+    await app();
+  }
+})();
 
-app();
+// app();
