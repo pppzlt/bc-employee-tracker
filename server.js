@@ -53,12 +53,13 @@ const questions = [
     type: "list",
     name: "empl_role",
     message: "What is the employee's role",
-    choices: ["???"],
+    choices: [],
   },
   {
     type: "list",
     name: "empl_mgr",
     message: "Who is the employee's manager?",
+    choices: [],
   },
   {
     type: "list",
@@ -91,7 +92,7 @@ const app = async () => {
       await viewAllEmployees();
       break;
     case "Add Employee":
-      //
+      await addEmployee();
       break;
     case "Update Employee Role":
       //
@@ -114,7 +115,7 @@ const app = async () => {
 const viewAllDept = async () => {
   let result = await db.promise().query("SELECT * FROM department");
   console.table(result[0]);
-  db.end();//can be comment out
+  db.end(); //can be comment out
 };
 
 const viewAllRoles = async () => {
@@ -150,18 +151,67 @@ const addDept = async () => {
 
 const addRole = async () => {
   //query table department first to get all the new departments
-  let [results, fields] = await db.promise().query('SELECT * FROM department');
-  results.map((key)=>{questions[4].choices.push(key.name)})
+  let [results, fields] = await db.promise().query("SELECT * FROM department");
+  results.forEach((key) => {
+    questions[4].choices.push(key.name);
+  });
   console.log(questions[4].choices);
 
   let ans = await prompt([questions[2], questions[3], questions[4]]);
+  //get the dept id through answer to questions
   let dept_id = results.find((key) => key.name === ans.role_dept).id;
-  await db.promise()
-    .query(`INSERT INTO role (title, salary, department_id) VALUES ('${ans.role}',${ans.role_salary},${dept_id})`);
+  await db
+    .promise()
+    .query(
+      `INSERT INTO role (title, salary, department_id) VALUES ('${ans.role}',${ans.role_salary},${dept_id})`
+    );
   console.log(`Added ${ans.role} to the database`);
-  db.end();
-}
+  db.end(); //can be comment out
+};
 
+const addEmployee = async () => {
+  //query role table to get new roles
+  let [results, fields] = await db.promise().query("SELECT * FROM role");
+  results.forEach((key) => {
+    questions[7].choices.push(key.title);
+  });
+  // console.log(questions[7].choices)
+  //query employee table to get employee names
+  let [results_emp, fields_emp] = await db
+    .promise()
+    .query("SELECT * FROM employee");
+  results_emp.forEach((key) => {
+    questions[8].choices.push(key.first_name + " " + key.last_name);
+  });
+  //added none to the list
+  questions[8].choices.unshift("None");
+  // console.log(questions[8].choices)
+
+  let ans = await prompt([
+    questions[5],
+    questions[6],
+    questions[7],
+    questions[8],
+  ]);
+  //get the role id and manager id
+  let role_id = results.find((key) => key.title === ans.empl_role).id;
+  let manager_id =
+    ans.empl_mgr !== "None"
+      ? results_emp.find(
+          (key) => ans.empl_mgr === key.first_name + " " + key.last_name
+        ).id
+      : null;
+  // console.log(role_id);
+  // console.log(manager_id);
+  // console.log(`${ans.firstname},${ans.lastname},${role_id},${manager_id}`)
+  await db
+    .promise()
+    .query(
+      `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('${ans.firstname}','${ans.lastname}',${role_id},${manager_id})`
+    );
+  console.log(`Added ${ans.firstname + " " + ans.lastname} to the database`);
+  db.end(); //can be comment out
+};
 
 //---------come back after end
 // (async () => {
