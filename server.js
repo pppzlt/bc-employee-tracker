@@ -152,6 +152,7 @@ const addDept = async () => {
 const addRole = async () => {
   //query table department first to get all the new departments
   let [results, fields] = await db.promise().query("SELECT * FROM department");
+  questions[4].choices = [];
   results.forEach((key) => {
     questions[4].choices.push(key.name);
   });
@@ -172,6 +173,7 @@ const addRole = async () => {
 const addEmployee = async () => {
   //query role table to get new roles
   let [results, fields] = await db.promise().query("SELECT * FROM role");
+  questions[7].choices = [];
   results.forEach((key) => {
     questions[7].choices.push(key.title);
   });
@@ -180,6 +182,7 @@ const addEmployee = async () => {
   let [results_emp, fields_emp] = await db
     .promise()
     .query("SELECT * FROM employee");
+  questions[8].choices = [];
   results_emp.forEach((key) => {
     questions[8].choices.push(key.first_name + " " + key.last_name);
   });
@@ -218,6 +221,7 @@ const updateEmployeeRole = async () => {
   let [results_emp, fields_epm] = await db
     .promise()
     .query("SELECT * FROM employee");
+  questions[9].choices = [];
   results_emp.forEach((key) => {
     questions[9].choices.push(key.first_name + " " + key.last_name);
   });
@@ -225,6 +229,7 @@ const updateEmployeeRole = async () => {
   let [results_role, fields_role] = await db
     .promise()
     .query("SELECT * FROM role");
+  questions[10].choices = [];
   results_role.forEach((key) => {
     questions[10].choices.push(key.title);
   });
