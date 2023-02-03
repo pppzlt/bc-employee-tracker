@@ -65,13 +65,13 @@ const questions = [
     type: "list",
     name: "upd_empl",
     message: "Which employee's role do you want to update?",
-    choices: ["???"],
+    choices: [],
   },
   {
     type: "list",
     name: "upd_empl_role",
     message: "Which role do you want to assign the selected employee?",
-    choices: ["???"],
+    choices: [],
   },
 ];
 
@@ -95,7 +95,7 @@ const app = async () => {
       await addEmployee();
       break;
     case "Update Employee Role":
-      //
+      await updateEmployeeRole();
       break;
     case "View All Roles":
       await viewAllRoles();
@@ -211,6 +211,33 @@ const addEmployee = async () => {
     );
   console.log(`Added ${ans.firstname + " " + ans.lastname} to the database`);
   db.end(); //can be comment out
+};
+
+const updateEmployeeRole = async () => {
+  //query the employee table and populate list choices
+  let [results_emp, fields_epm] = await db
+    .promise()
+    .query("SELECT * FROM employee");
+  results_emp.forEach((key) => {
+    questions[9].choices.push(key.first_name + " " + key.last_name);
+  });
+  //query the role table
+  let [results_role, fields_role] = await db
+    .promise()
+    .query("SELECT * FROM role");
+  results_role.forEach((key) => {
+    questions[10].choices.push(key.title);
+  });
+  console.log(questions[9].choices);
+  console.log(questions[10].choices);
+
+  let ans = await prompt([questions[9], questions[10]]);
+  //get the employee and the new role id;
+  let emp_id = results_emp.find((key) => ans.upd_empl === (key.first_name + " " + key.last_name)).id;
+  let role_id = results_role.find((key) => key.title === ans.upd_empl_role).id;
+  await db.promise().query(`UPDATE employee SET role_id = ${role_id} WHERE id = ${emp_id}`);
+  console.log(`Updated employee's role`);
+  db.end(); //can be comm out
 };
 
 //---------come back after end
