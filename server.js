@@ -37,7 +37,7 @@ const questions = [
     type: "list",
     name: "role_dept",
     message: "Whick department does the role belong to?",
-    choices: ["????"],
+    choices: [],
   },
   {
     type: "input",
@@ -150,12 +150,16 @@ const addDept = async () => {
 
 const addRole = async () => {
   //query table department first to get all the new departments
+  let [results, fields] = await db.promise().query('SELECT * FROM department');
+  results.map((key)=>{questions[4].choices.push(key.name)})
+  console.log(questions[4].choices);
 
-
-  let ans = await prompt([questions[2],questions[3],questions[4]]);
+  let ans = await prompt([questions[2], questions[3], questions[4]]);
+  let dept_id = results.find((key) => key.name === ans.role_dept).id;
   await db.promise()
-    .query(`INSERT INTO role (title, salary, department_id) VALUES ('${ans.role}',${ans.role_salary},${ans.role_dept})`);
-  
+    .query(`INSERT INTO role (title, salary, department_id) VALUES ('${ans.role}',${ans.role_salary},${dept_id})`);
+  console.log(`Added ${ans.role} to the database`);
+  db.end();
 }
 
 
@@ -165,3 +169,5 @@ const addRole = async () => {
 //     await app();
 //   }
 // })();
+
+app();
